@@ -1,5 +1,6 @@
 ﻿using BookServiceUsingRepo.IRepo;
 using BookServiceUsingRepo.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace BookServiceUsingRepo.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BookController : ControllerBase
     {
         IBookRepo _repo;
