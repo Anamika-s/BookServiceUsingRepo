@@ -8,10 +8,11 @@ namespace BookServiceUsingRepo.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class BookController : ControllerBase
     {
         IBookRepo _repo;
+       
         public BookController(IBookRepo repo)
         {
             _repo = repo;
@@ -19,6 +20,10 @@ namespace BookServiceUsingRepo.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            var _log4net = log4net.LogManager.GetLogger(typeof(BookController));
+            _log4net.Info("Info from Log4net");
+            _log4net.Error("eeee");
+            throw new NullReferenceException("nullllllll");
             return Ok(_repo.GetBooks());
         }
 

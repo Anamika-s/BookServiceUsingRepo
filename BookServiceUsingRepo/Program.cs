@@ -1,9 +1,13 @@
 using BookServiceUsingRepo.Context;
+using BookServiceUsingRepo.Exceptions;
 using BookServiceUsingRepo.IRepo;
 using BookServiceUsingRepo.REpo;
+using log4net.Config;
+using log4net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 namespace BookServiceUsingRepo
@@ -35,8 +39,25 @@ namespace BookServiceUsingRepo
                 (op => op.UseSqlServer(builder.Configuration["ConnectionStrings:BookConnection"]));
 
             builder.Services.AddScoped<IBookRepo,BookRepo>();
+            builder.Services.AddExceptionHandler<AppExceptionHandler>();
+
+
+            var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+
+
+
             var app = builder.Build();
 
+            if (app.Environment.IsProduction())
+            {
+                app.UseExceptionHandler("/error");
+
+            }
+            else
+            {
+                app.UseExceptionHandler(_ => { });
+            }
             // Configure the HTTP request pipeline.
             app.UseAuthentication();
             app.UseAuthorization();
