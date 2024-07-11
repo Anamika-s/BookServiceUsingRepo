@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookServiceUsingRepo.Migrations
 {
     [DbContext(typeof(BookDbContext))]
-    [Migration("20240709090257_addedusers")]
-    partial class addedusers
+    [Migration("20240710060212_test1")]
+    partial class test1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,40 @@ namespace BookServiceUsingRepo.Migrations
                     b.ToTable("Books");
                 });
 
+            modelBuilder.Entity("BookServiceUsingRepo.Models.Role", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            RoleName = "Admin"
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            RoleName = "Manager"
+                        },
+                        new
+                        {
+                            RoleId = 3,
+                            RoleName = "Employee"
+                        });
+                });
+
             modelBuilder.Entity("BookServiceUsingRepo.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -64,15 +98,27 @@ namespace BookServiceUsingRepo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
 
@@ -80,21 +126,35 @@ namespace BookServiceUsingRepo.Migrations
                         new
                         {
                             Id = 1,
+                            Email = "user2@gmial.com",
+                            FirstName = "Vijay Sood",
                             Password = "pass@1",
-                            UserName = "user1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Password = "pass@123",
-                            UserName = "user2"
+                            RoleId = 2
                         },
                         new
                         {
                             Id = 3,
-                            Password = "pass@123",
-                            UserName = "user3"
+                            Email = "user3@gmial.com",
+                            FirstName = "Deepak Sood",
+                            Password = "pass@1",
+                            RoleId = 3
                         });
+                });
+
+            modelBuilder.Entity("BookServiceUsingRepo.Models.User", b =>
+                {
+                    b.HasOne("BookServiceUsingRepo.Models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("BookServiceUsingRepo.Models.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

@@ -11,30 +11,46 @@ namespace BookServiceUsingRepo.Context
 
         public DbSet<Book> Books { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Role>()
+                .HasData(new Role()
+                {
+                    RoleId = 1,
+                    RoleName = "Admin"
+                },
+                new Role()
+                {
+                    RoleId = 2,
+                    RoleName = "Manager"
+                },
+                new Role()
+                {
+                    RoleId = 3,
+                    RoleName = "Employee"
+                });
             modelBuilder.Entity<User>()
                 .HasData(new User
                 {
                     Id = 1,
-                    UserName = "user1",
-                    Password = "pass@1"
-                },
-                new User
-                {
-                    Id = 2,
-                    UserName = "user2",
-                    Password = "pass@123"
+                    FirstName = "Vijay Sood",
+                    Password = "pass@1",
+                    Email = "user2@gmial.com",
+                    RoleId = 2
                 },
                 new User
                 {
                     Id = 3,
-                    UserName = "user3",
-                    Password = "pass@123"
+                    FirstName = "Deepak Sood",
+                    Password = "pass@1",
+                    Email = "user3@gmial.com",
+                    RoleId = 3
                 }
                );
-        }
 
 
         }
     }
+}
+
